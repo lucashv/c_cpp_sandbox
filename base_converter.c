@@ -7,24 +7,24 @@
 #define BIN 1
 #define OCT 2
 #define HEX 3
-#define TAMBUFFER 16
-#define TAMBUFFERNUMENTRADA 255
+#define BUFFER_SIZE 16
+#define INPUT_BUFFER_SIZE 255
 
 char dicionarioHex[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'}; // Dicionário para formar números hexadecimais
 
-// Declaração de prototipos
-int converterDeDecimal(int*, int, int, int); // Converte de decimal para as outras bases
-int converterParaDecimal(char*, int); // Converte das outras bases para decimal
-void imprimirBuffer(int*, int, int); // Imprime o buffer do resultado da conversão
-int procurarNoDicionario(char); // Retorna o valor decimal equivalente ao valor hexadecimal do dicionario
-int inverterPosicoesVetor(char*, char*, int); // Coloca as posicoes do buffer 1 nas posicoes contrarias no buffer 2
+// Prototypes declaration
+int convert_from_decimal(int*, int, int, int); // Convert from decimal to other bases
+int convert_to_decimal(char*, int); // Convert from other bases to decimal
+void print_buffer(int*, int, int); // Print convertion result buffer
+int search_in_dictionary(char); // Search for the decimal value that represents a given hexadecimal value
+int invert_vector(char*, char*, int); // Put buffer 1 values in inverted positions in buffer 2
 
 int main() {
-	char strNumEntrada[TAMBUFFERNUMENTRADA] = {'\0'};
+	char strNumEntrada[INPUT_BUFFER_SIZE] = {'\0'};
 	int numEntrada = 0;
 	int formatoEntrada = 0;
 	int formatoSaida = 0;
-	int buffer[TAMBUFFER] = {0};
+	int buffer[BUFFER_SIZE] = {0};
 	int tamanhoSaida = 0;
 	char quit = '\0';
 
@@ -46,11 +46,11 @@ int main() {
 		printf("Informe o formato da saida (DEC = 0, BIN = 1, OCT = 2, HEX = 3): ");
 		scanf("%d", &formatoSaida);
 
-		numEntrada = converterParaDecimal(strNumEntrada, formatoEntrada);
-		tamanhoSaida = converterDeDecimal(buffer, TAMBUFFER, numEntrada, formatoSaida);
+		numEntrada = convert_to_decimal(strNumEntrada, formatoEntrada);
+		tamanhoSaida = convert_from_decimal(buffer, BUFFER_SIZE, numEntrada, formatoSaida);
 		
 		printf("O resultado e ");
-		imprimirBuffer(buffer, tamanhoSaida, (formatoSaida == HEX));
+		print_buffer(buffer, tamanhoSaida, (formatoSaida == HEX));
 
 		// flushall();
 
@@ -63,7 +63,7 @@ int main() {
 	return 0;
 }
 
-int converterDeDecimal(int* buffer, int tamanhoBuffer, int numDecimal, int baseSaida) {	
+int convert_from_decimal(int* buffer, int tamanhoBuffer, int numDecimal, int baseSaida) {	
 	int indice = 0;
 	int resultado = 0;
 	int resto = 0;
@@ -95,12 +95,12 @@ int converterDeDecimal(int* buffer, int tamanhoBuffer, int numDecimal, int baseS
 	return indice;
 }
 
-int converterParaDecimal(char* numEntrada, int formato) {	
+int convert_to_decimal(char* numEntrada, int formato) {	
 	int saida = 0;
 	int base = 0;
 	int indiceDeParada = 0;
 	int valorNaPosicao = 0;
-	char numEntradaInvertido[TAMBUFFERNUMENTRADA] = {'\0'};
+	char numEntradaInvertido[INPUT_BUFFER_SIZE] = {'\0'};
 	int indice = 0;
 
 	if (formato == BIN)
@@ -115,12 +115,12 @@ int converterParaDecimal(char* numEntrada, int formato) {
 		indiceDeParada = 2;
 	}
 
-	indice = inverterPosicoesVetor(numEntradaInvertido, numEntrada, TAMBUFFERNUMENTRADA);
+	indice = invert_vector(numEntradaInvertido, numEntrada, INPUT_BUFFER_SIZE);
 	indice -= (indiceDeParada + 1);
 
 	do {
 		if (numEntradaInvertido[indice] != '\0') {
-			valorNaPosicao = procurarNoDicionario(numEntradaInvertido[indice]);
+			valorNaPosicao = search_in_dictionary(numEntradaInvertido[indice]);
 			saida += (int) pow((double) base, indice) * valorNaPosicao;		
 		}
 	} while(indice-- >= 0);
@@ -128,7 +128,7 @@ int converterParaDecimal(char* numEntrada, int formato) {
 	return saida;
 }
 
-int procurarNoDicionario(char valorHex) {
+int search_in_dictionary(char valorHex) {
 	int i = 0;
 	for (; i < 16; i++) {
 		if (dicionarioHex[i] == valorHex)
@@ -136,7 +136,7 @@ int procurarNoDicionario(char valorHex) {
 	}
 }
 
-int inverterPosicoesVetor(char* invertido, char* original, int tamanho) {
+int invert_vector(char* invertido, char* original, int tamanho) {
 	int indice = tamanho - 1;
 	int indiceInvertido = 0;
 
@@ -148,7 +148,7 @@ int inverterPosicoesVetor(char* invertido, char* original, int tamanho) {
 	return indiceInvertido;
 }
 
-void imprimirBuffer(int* buffer, int tamanhoBuffer, int hex) {
+void print_buffer(int* buffer, int tamanhoBuffer, int hex) {
 	int i = 0;
 
 	if (hex)
