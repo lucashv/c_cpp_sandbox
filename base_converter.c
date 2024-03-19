@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <conio.h>
 #include <math.h>
 #include <string.h>
 
@@ -53,10 +52,12 @@ int main() {
 		printf("O resultado e ");
 		imprimirBuffer(buffer, tamanhoSaida, (formatoSaida == HEX));
 
-		flushall();
+		// flushall();
 
 		printf("\n\ndigite 'q' para sair ou qualquer outra tecla para continuar... \n");
-		scanf("%c", &quit);
+		scanf(" %c", &quit);
+
+		printf("\e[1;1H\e[2J");
 	} while (quit != 'q');	
 
 	return 0;
@@ -120,7 +121,7 @@ int converterParaDecimal(char* numEntrada, int formato) {
 	do {
 		if (numEntradaInvertido[indice] != '\0') {
 			valorNaPosicao = procurarNoDicionario(numEntradaInvertido[indice]);
-			saida += (int)pow((double)base, indice) * valorNaPosicao;		
+			saida += (int) pow((double) base, indice) * valorNaPosicao;		
 		}
 	} while(indice-- >= 0);
 
